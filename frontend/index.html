@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CinePing • Vizag Edition</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --ink:#07040e; --ink2:#150a22;
+      --txt:rgba(255,255,255,.93);
+      --muted:rgba(255,255,255,.66);
+      --gold:#F7D26B; --amber:#FF8A3D; --crimson:#D01D53;
+      --teal:#19E6D8; --violet:#7B4DFF;
+      --ok:#2cf77c; --warn:#ffcc00; --err:#ff5a7a;
+    }
+    *{box-sizing:border-box;}
+    body{
+      margin:0;font-family:'Poppins',system-ui,-apple-system,Segoe UI,Roboto;color:var(--txt);
+      min-height:100vh;overflow-x:hidden;
+      background:
+        radial-gradient(1200px 700px at 12% 18%, rgba(247,210,107,.22), transparent 60%),
+        radial-gradient(900px 600px at 85% 18%, rgba(208,29,83,.22), transparent 60%),
+        radial-gradient(1000px 700px at 55% 100%, rgba(255,138,61,.18), transparent 65%),
+        radial-gradient(900px 600px at 60% 10%, rgba(25,230,216,.14), transparent 60%),
+        radial-gradient(900px 600px at 30% 95%, rgba(123,77,255,.12), transparent 62%),
+        linear-gradient(160deg, var(--ink), var(--ink2));
+    }
+
+    .wrap{max-width:1180px;margin:0 auto;padding:26px 18px 56px;}
+    .top{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:18px;}
+    .brand{display:flex;align-items:center;gap:12px;}
+    .logo{width:46px;height:46px;border-radius:16px;
+      background:radial-gradient(circle at 30% 30%, rgba(247,210,107,.98), rgba(247,210,107,.18) 55%, transparent 60%),
+                 linear-gradient(145deg, rgba(208,29,83,.55), rgba(0,0,0,.35));
+      border:1px solid rgba(255,255,255,.20);box-shadow:0 22px 80px rgba(0,0,0,.55);
+      position:relative;overflow:hidden;
+    }
+    .logo:before{content:"";position:absolute;inset:13px 13px 13px 16px;
+      clip-path:polygon(0 0, 100% 50%, 0 100%);
+      background:rgba(255,255,255,.95);border-radius:6px;}
+    .brand h1{margin:0;font-size:18px;font-weight:900;line-height:1;}
+    .brand p{margin:3px 0 0;font-size:12px;color:var(--muted)}
+    .pill{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:999px;
+      background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.12);
+      backdrop-filter: blur(10px);font-size:12px;color:var(--muted);}
+    .dot{width:9px;height:9px;border-radius:999px;background:var(--ok);}
+    .btnSmall{cursor:pointer;padding:10px 12px;border-radius:999px;border:1px solid rgba(255,255,255,.16);
+      background:linear-gradient(135deg, rgba(247,210,107,.22), rgba(208,29,83,.12));
+      color:rgba(255,255,255,.94);font-weight:900;font-size:12px;}
+
+    .grid{display:grid;grid-template-columns:1.25fr .75fr;gap:18px;align-items:start;}
+    @media(max-width:980px){.grid{grid-template-columns:1fr;}}
+    .card{background:linear-gradient(180deg, rgba(0,0,0,.52), rgba(0,0,0,.26));
+      border:1px solid rgba(255,255,255,.14);border-radius:28px;
+      box-shadow:0 28px 110px rgba(0,0,0,.65);backdrop-filter: blur(14px);overflow:hidden;}
+    .hero{padding:18px 18px 12px;border-bottom:1px solid rgba(255,255,255,.10);}
+    .title{margin:0;font-size:28px;font-weight:900;}
+    .subtitle{margin:8px 0 0;color:rgba(255,255,255,.72);font-size:14px;line-height:1.65;}
+    .content{padding:16px 18px 18px;}
+    .formGrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+    @media(max-width:560px){.formGrid{grid-template-columns:1fr;}}
+    .full{grid-column:1/-1;}
+    label{display:block;font-size:12px;color:rgba(255,255,255,.72);margin:2px 0 7px;}
+    .field{width:100%;padding:12px 12px;border-radius:16px;background:rgba(0,0,0,.30);
+      border:1px solid rgba(255,255,255,.14);color:var(--txt);outline:none;}
+    .actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:12px;}
+    .btn{cursor:pointer;border:0;padding:12px 16px;border-radius:16px;font-weight:1000;color:#2a1200;
+      background:linear-gradient(135deg, var(--gold), var(--amber));}
+    .kbd{font-size:12px;color:rgba(255,255,255,.82);padding:6px 10px;border-radius:12px;background:rgba(0,0,0,.22);
+      border:1px solid rgba(255,255,255,.12);}
+    .status{margin-top:14px;padding:12px 14px;border-radius:18px;border:1px solid rgba(255,255,255,.12);
+      background:rgba(0,0,0,.18);font-size:13px;line-height:1.6;}
+
+    .dropdownWrap{position:relative;}
+    .dropdown{position:absolute;left:0;right:0;top:calc(100% + 8px);
+      background:rgba(0,0,0,.88);border:1px solid rgba(255,255,255,.14);border-radius:18px;
+      max-height:280px;overflow-y:auto;display:none;z-index:10;backdrop-filter: blur(14px);}
+    .dropdown.show{display:block;}
+    .dropItem{padding:12px 12px;cursor:pointer;border-bottom:1px solid rgba(255,255,255,.08);transition:.15s;}
+    .dropItem:hover{background:linear-gradient(135deg, rgba(247,210,107,.18), rgba(25,230,216,.12));}
+    .dropItem b{display:block;font-size:13px;}
+    .dropItem span{font-size:12px;color:rgba(255,255,255,.65);}
+
+    .popularBox{margin-top:10px;display:flex;flex-wrap:wrap;gap:10px;}
+    .chip{padding:8px 12px;border-radius:999px;font-size:12px;cursor:pointer;
+      border:1px solid rgba(255,255,255,.14);background:rgba(0,0,0,.22);transition:.15s;user-select:none;}
+    .chip:hover{transform:translateY(-1px);border-color:rgba(247,210,107,.55);background:rgba(247,210,107,.10);}
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <div class="top">
+      <div class="brand">
+        <div class="logo"></div>
+        <div>
+          <h1>CinePing</h1>
+          <p>Vizag edition • booking alerts</p>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:10px;align-items:center;">
+        <div class="pill">
+          <div id="serverDot" class="dot"></div>
+          Backend: <b id="serverText">checking…</b>
+        </div>
+        <button class="btnSmall" type="button" id="btnDemo">Fill demo</button>
+      </div>
+    </div>
+
+    <div class="grid">
+      <section class="card">
+        <div class="hero">
+          <h2 class="title">Vizag favourite theatres 🎟️</h2>
+          <p class="subtitle">No city field. Always fixed to Visakhapatnam. Click Theatre box → dropdown appears.</p>
+        </div>
+
+        <div class="content">
+          <form id="trackForm" novalidate autocomplete="off">
+            <div class="formGrid">
+
+              <div class="dropdownWrap full">
+                <label for="theatre">Theatre</label>
+                <input class="field" id="theatre" placeholder="Click here to select…" required />
+                <div id="theatreDropdown" class="dropdown"></div>
+                <div class="popularBox" id="popularTheatres"></div>
+              </div>
+
+              <div class="full">
+                <label for="movie">Movie</label>
+                <input class="field" id="movie" list="movieList" placeholder="Interstellar" required />
+                <datalist id="movieList"></datalist>
+              </div>
+
+              <div>
+                <label for="date">Date</label>
+                <input class="field" id="date" type="date" required />
+              </div>
+
+              <div>
+                <label for="timing">Preferred time</label>
+                <select class="field" id="timing" required>
+                  <option value="">Select</option>
+                  <option>Morning</option>
+                  <option>Afternoon</option>
+                  <option>Evening</option>
+                  <option>Night</option>
+                  <option>Anytime</option>
+                </select>
+              </div>
+
+              <div class="full">
+                <label for="platform">Platform</label>
+                <select class="field" id="platform" required>
+                  <option value="">Select</option>
+                  <option value="bookmyshow">BookMyShow</option>
+                  <option value="district">District</option>
+                </select>
+              </div>
+
+              <div class="full">
+                <label for="url">Booking URL (required for instant-check)</label>
+                <input class="field" id="url" placeholder="Paste BookMyShow/District URL here" required />
+              </div>
+
+              <div class="actions full">
+                <button type="submit" class="btn" id="btnSubmit">Start tracking</button>
+                <span class="kbd">No refresh • Fetch API</span>
+              </div>
+
+              <div id="status" class="status full">Status: Ready ✅</div>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <aside class="card" style="padding:18px;">
+        <h3 style="margin-top:0;">🎬 Your Vizag Theatres</h3>
+        <p style="color:rgba(255,255,255,.72);font-size:13px;line-height:1.6;margin:0;">
+          STBL Cine World Madhurawada • Sri Melody HDR Dolby Atmos • Jagadamba Complex • Sangam • Sarat • Cinepolis: Sreekanya Cineglitz • INOX: Varun Beach
+        </p>
+      </aside>
+    </div>
+
+    <footer style="margin-top:18px;color:rgba(255,255,255,.58);font-size:12px;text-align:center">
+      Built by bAAva • CinePing Vizag Edition
+    </footer>
+  </div>
+
+  <script src="./theatres.js"></script>
+
+  <script>
+    const API_BASE = "http://127.0.0.1:5000";
+
+    const serverText  = document.getElementById('serverText');
+    const serverDot   = document.getElementById('serverDot');
+    const statusBox   = document.getElementById('status');
+    const form        = document.getElementById('trackForm');
+    const btnDemo     = document.getElementById('btnDemo');
+
+    const theatreInput= document.getElementById('theatre');
+    const dropdown    = document.getElementById('theatreDropdown');
+    const popularBox  = document.getElementById('popularTheatres');
+
+    const movieInput  = document.getElementById('movie');
+    const movieList   = document.getElementById('movieList');
+
+    const urlInput    = document.getElementById('url');
+
+    let THEATRES = (window.FAV_THEATRES || []).filter(t => (t.city || "").toLowerCase().includes("visakhapatnam"));
+
+    function setStatus(msg){ statusBox.textContent = "Status: " + msg; }
+
+    function setBackendState(ok){
+      serverText.textContent = ok ? "online" : "offline";
+      serverDot.style.background = ok ? "var(--ok)" : "var(--err)";
+    }
+
+    async function pingBackend(){
+      try{
+        const res = await fetch(`${API_BASE}/`);
+        setBackendState(res.ok);
+      }catch{
+        setBackendState(false);
+      }
+    }
+
+    function renderPopular(){
+      popularBox.innerHTML = "";
+      THEATRES.forEach(t=>{
+        const chip=document.createElement("div");
+        chip.className="chip";
+        chip.textContent=t.name;
+        chip.onclick=()=>{
+          theatreInput.value=t.name;
+          dropdown.classList.remove("show");
+        };
+        popularBox.appendChild(chip);
+      });
+    }
+
+    function showDropdown(results){
+      dropdown.innerHTML="";
+      results.forEach(t=>{
+        const item=document.createElement("div");
+        item.className="dropItem";
+        item.innerHTML=`<b>${t.name}</b><span>${t.venue || ""}</span>`;
+        item.onclick=()=>{
+          theatreInput.value=t.name;
+          dropdown.classList.remove("show");
+        };
+        dropdown.appendChild(item);
+      });
+      dropdown.classList.add("show");
+    }
+
+    theatreInput.addEventListener("focus", ()=> showDropdown(THEATRES));
+    theatreInput.addEventListener("input", ()=>{
+      const q=theatreInput.value.trim().toLowerCase();
+      const filtered=THEATRES.filter(t=>t.name.toLowerCase().includes(q));
+      showDropdown(filtered);
+    });
+
+    document.addEventListener("click", (e)=>{
+      if(!dropdown.contains(e.target) && e.target !== theatreInput){
+        dropdown.classList.remove("show");
+      }
+    });
+
+    // movie autocomplete
+    let movieTimer=null;
+    movieInput.addEventListener("input", ()=>{
+      clearTimeout(movieTimer);
+      movieTimer=setTimeout(async ()=>{
+        const q=movieInput.value.trim();
+        if(q.length<2) return;
+        try{
+          const res=await fetch(`${API_BASE}/movies?q=${encodeURIComponent(q)}`);
+          const suggestions=await res.json();
+          movieList.innerHTML="";
+          (suggestions||[]).slice(0,10).forEach(title=>{
+            const opt=document.createElement("option");
+            opt.value=title;
+            movieList.appendChild(opt);
+          });
+        }catch(e){}
+      },180);
+    });
+
+    // submit
+    form.addEventListener("submit", async (e)=>{
+      e.preventDefault();
+      e.stopPropagation();
+
+      const payload = {
+        theatre: theatreInput.value.trim(),
+        movie: movieInput.value.trim(),
+        date: document.getElementById("date").value,
+        timing: document.getElementById("timing").value,
+        platform: document.getElementById("platform").value,
+        url: urlInput.value.trim(),
+      };
+
+      const missing = Object.entries(payload).filter(([k,v])=>!v).map(([k])=>k);
+      if(missing.length){
+        setStatus("Fill: " + missing.join(", "));
+        return;
+      }
+
+      setStatus("Submitting…");
+
+      try{
+        const res = await fetch(`${API_BASE}/add`, {
+          method:"POST",
+          headers:{ "Content-Type":"application/json" },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await res.json();
+        if(!res.ok){
+          setStatus(data.error || "Server error ❌");
+          return;
+        }
+
+        setStatus(data.status || "Tracking started ✅");
+      }catch(err){
+        setStatus("Backend not reachable ❌ Run python app.py");
+      }
+    });
+
+    // demo
+    btnDemo.addEventListener("click", ()=>{
+      theatreInput.value = "Jagadamba Complex A/C 4K Dolby Atmos";
+      movieInput.value = "Interstellar";
+      document.getElementById("date").valueAsDate = new Date();
+      document.getElementById("timing").value = "Night";
+      document.getElementById("platform").value = "bookmyshow";
+      urlInput.value = "https://in.bookmyshow.com/";
+      setStatus("Demo filled ✅");
+    });
+
+    (async function init(){
+      renderPopular();
+      await pingBackend();
+      setInterval(pingBackend, 6000);
+    })();
+  </script>
+</body>
+</html>
