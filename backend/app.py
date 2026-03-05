@@ -140,3 +140,20 @@ def tmdb_get(endpoint: str, params: Dict[str, Any] = None):
         return r.json(), None
     except Exception as e:
         return None, str(e)
+
+@app.route("/movies")
+def movie_suggest():
+    q = request.args.get("q", "").strip()
+    if len(q) < 2:
+        return jsonify([])
+
+    data, err = tmdb_get("/search/movie", {"query": q, "include_adult": "false"})
+    if err:
+        return jsonify({"error": err}), 500
+
+    results = data.get("results", [])[:10]
+    titles = [m.get("title") for m in results if m.get("title")]
+    return jsonify(titles), 200
+
+if __name__ == "__main__":
+    app.run(debug=True)
